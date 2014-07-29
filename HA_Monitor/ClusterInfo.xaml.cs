@@ -18,25 +18,27 @@ namespace HA_Monitor
 	/// </summary>
     public partial class ClusterInfo : UserControl
 	{
-        private int clusterIndex { get; set; }
+        public int clusterIndex;
 
         public ClusterInfo()
 		{
 			this.InitializeComponent();
 		}
 
-        public void setData(double cpu, double mem, double traficTotal, double traficSent, double traficRecieve, string status) {
-            if (status.CompareTo("Working") == 0) {
-                TxtCpuUseage.Text = Math.Round(cpu, 2).ToString() + " %";
-                TxtMemUseage.Text = Math.Round(mem, 2).ToString() + " MB";
-                TxtTraficTotal.Text = Math.Round(traficTotal, 0).ToString() + " MB";
-                TxtTraficSent.Text = Math.Round(traficSent, 0).ToString() + " MB";
-                TxtTraficReceived.Text = Math.Round(traficRecieve, 0).ToString() + " MB";
+        public void setData(ClusterStatusData IData) {
+            if (IData.Cluster_Status.CompareTo("Working") == 0) {
+                TxtClusterNo.Text = IData.Cluster_Index.ToString();
+                TxtCpuUseage.Text = IData.CPU_Useage + " %";
+                TxtMemUseage.Text = IData.Available_Memory + " MB";
+                TxtTraficTotal.Text = string.Format("{0:F2}", IData.Trafic_Total) + " MB";
+                TxtTraficSent.Text = string.Format("{0:F2}", IData.Trafic_Sent) + " MB";
+                TxtTraficReceived.Text = string.Format("{0:F2}", IData.Trafic_Received) + " MB";
 
                 if (((SolidColorBrush)StatMarker.Fill).Color != Colors.Green) {
-                    ((SolidColorBrush)StatMarker.Fill).Color = Colors.Green;
+                    StatMarker.Fill = new SolidColorBrush(Colors.Green);
                 }
-            } else if (status.CompareTo("Updating") == 0) {
+            } else if (IData.Cluster_Status.CompareTo("Updating") == 0) {
+                TxtClusterNo.Text = IData.Cluster_Index.ToString();
                 TxtCpuUseage.Text = " - ";
                 TxtMemUseage.Text = " - ";
                 TxtTraficTotal.Text = " - ";
@@ -44,9 +46,10 @@ namespace HA_Monitor
                 TxtTraficReceived.Text = " - ";
 
                 if (((SolidColorBrush)StatMarker.Fill).Color != Colors.Yellow) {
-                    ((SolidColorBrush)StatMarker.Fill).Color = Colors.Yellow;
+                    StatMarker.Fill = new SolidColorBrush(Colors.Yellow);
                 }
-            } else if (status.CompareTo("Disabled") == 0) {
+            } else if (IData.Cluster_Status.CompareTo("Disabled") == 0) {
+                TxtClusterNo.Text = IData.Cluster_Index.ToString();
                 TxtCpuUseage.Text = " - ";
                 TxtMemUseage.Text = " - ";
                 TxtTraficTotal.Text = " - ";
@@ -54,9 +57,13 @@ namespace HA_Monitor
                 TxtTraficReceived.Text = " - ";
 
                 if (((SolidColorBrush)StatMarker.Fill).Color != Colors.Red) {
-                    ((SolidColorBrush)StatMarker.Fill).Color = Colors.Red;
+                    StatMarker.Fill = new SolidColorBrush(Colors.Red);
                 }
             }
+        }
+
+        public void setDiable() {
+            ((SolidColorBrush)StatMarker.Fill).Color = Colors.Red;
         }
 	}
 }

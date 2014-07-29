@@ -61,9 +61,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataClasses\StatusData.cs" />
     <Compile Include="ClusterInfo.xaml.cs">
       <DependentUpon>ClusterInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataClasses\ClusterStatusData.cs" />
     <Compile Include="HAProxyInfo.xaml.cs">
       <DependentUpon>HAProxyInfo.xaml</DependentUpon>
     </Compile>

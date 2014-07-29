@@ -22,24 +22,6 @@ namespace HA_Monitor {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    
-    public class ClusterStatusData{
-        public int Cluster_Index { get; set; }
-        public Double CPU_Useage { get; set; }
-        public Double Available_Memory { get; set; }
-        public Double Trafic_Total { get; set; }
-        public Double Trafic_Sent { get; set; }
-        public Double Trafic_Received { get; set; }
-    }
-    public class StatusData {
-        public string HAProxy_IP { get; set; }
-        public Double CPU_Useage { get; set; }
-        public Double Available_Memory { get; set; }
-        public Double Trafic_Total { get; set; }
-        public Double Trafic_Sent { get; set; }
-        public Double Trafic_Received { get; set; }
-        public IList<ClusterStatusData> Cluster { get; set; }
-    }
 
     public partial class MainWindow : Window {
 
@@ -96,7 +78,7 @@ namespace HA_Monitor {
         private void Receive_Completed(object sender, SocketAsyncEventArgs e) {
             Socket ClientSocket = (Socket)sender;
             if (ClientSocket.Connected && e.BytesTransferred > 0) {
-                byte[] szData = e.Buffer;    // 데이터 수신
+                byte[] szData = e.Buffer;    // 데이터 수신k
                 string sData = Encoding.UTF8.GetString(szData);
 
                 StatusData ReceivedData = JsonConvert.DeserializeObject<StatusData>(sData);
@@ -112,6 +94,8 @@ namespace HA_Monitor {
                 e.SetBuffer(new byte[4096], 0, 4096);
                 ClientSocket.ReceiveAsync(e);
             } else {
+                string clientIP = ClientSocket.RemoteEndPoint.ToString();
+
                 ClientSocket.Disconnect(false);
                 ClientSocket.Dispose();
                 clientList.Remove(ClientSocket);
@@ -120,21 +104,28 @@ namespace HA_Monitor {
         #endregion
 
         #region UpdateUI
-        private void UpdateUI (StatusData data) {
-            if (clientList.Count != haproxyList.Count) {
-                if (clientList.Count > haproxyList.Count) {
-                    
+        private void UpdateUI (StatusData IData) {
+            int index = FindHAProxyClusterEle(IData.HAProxy_IP);
+            Dispatcher.BeginInvoke((Action)delegate() {
+                if (index != -1) {
+                    haproxyList[index].SetData(IData);
                 } else {
+                    TabMainContent.Items.Add(new TabItem());
+                    ((TabItem)TabMainContent.Items[TabMainContent.Items.Count - 1]).Header = IData.HAProxy_IP;
 
+                    haproxyList.Add(new HAProxyInfo());
+
+                    ((TabItem)TabMainContent.Items[TabMainContent.Items.Count - 1]).Content = haproxyList[haproxyList.Count - 1];
+                    haproxyList[haproxyList.Count - 1].SetData(IData);
                 }
-            } else {
-
-            }
+            });
         }
 
-        private int FindHAProxyClustEle(string IPAddr) {
+        private int FindHAProxyClusterEle(string IPAddr) {
             for (int i = 0; i < haproxyList.Count; i++) {
-                
+                if (haproxyList[i].HAProxy_IP.CompareTo(IPAddr) == 0) {
+                    return i;
+                }
             }
             return -1;
         }

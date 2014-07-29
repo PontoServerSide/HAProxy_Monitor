@@ -19,6 +19,7 @@ namespace HA_Monitor
     public partial class ClusterInfo : UserControl
 	{
         public int clusterIndex;
+        public int CPU_Useage = 0;
 
         public ClusterInfo()
 		{
@@ -29,6 +30,7 @@ namespace HA_Monitor
             if (IData.Cluster_Status.CompareTo("Working") == 0) {
                 TxtClusterNo.Text = IData.Cluster_Index.ToString();
                 TxtCpuUseage.Text = IData.CPU_Useage + " %";
+                CPU_Useage = IData.CPU_Useage;
                 TxtMemUseage.Text = IData.Available_Memory + " MB";
                 TxtTraficTotal.Text = string.Format("{0:F2}", IData.Trafic_Total) + " MB";
                 TxtTraficSent.Text = string.Format("{0:F2}", IData.Trafic_Sent) + " MB";
@@ -40,6 +42,7 @@ namespace HA_Monitor
             } else if (IData.Cluster_Status.CompareTo("Updating") == 0) {
                 TxtClusterNo.Text = IData.Cluster_Index.ToString();
                 TxtCpuUseage.Text = " - ";
+                CPU_Useage = -1;
                 TxtMemUseage.Text = " - ";
                 TxtTraficTotal.Text = " - ";
                 TxtTraficSent.Text = " - ";
@@ -51,6 +54,7 @@ namespace HA_Monitor
             } else if (IData.Cluster_Status.CompareTo("Disabled") == 0) {
                 TxtClusterNo.Text = IData.Cluster_Index.ToString();
                 TxtCpuUseage.Text = " - ";
+                CPU_Useage = -2;
                 TxtMemUseage.Text = " - ";
                 TxtTraficTotal.Text = " - ";
                 TxtTraficSent.Text = " - ";

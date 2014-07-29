@@ -8,7 +8,7 @@ namespace HA_Monitor {
     public class StatusData {
         public string HAProxy_IP { get; set; }
         public int CPU_Useage { get; set; }
-        public int Available_Memory { get; set; }
+        public string Available_Memory { get; set; }
         public Double Trafic_Total { get; set; }
         public Double Trafic_Sent { get; set; }
         public Double Trafic_Received { get; set; }

@@ -23,12 +23,22 @@ namespace HA_Monitor {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     
+    public class ClusterStatusData{
+        public int Cluster_Index { get; set; }
+        public Double CPU_Useage { get; set; }
+        public Double Available_Memory { get; set; }
+        public Double Trafic_Total { get; set; }
+        public Double Trafic_Sent { get; set; }
+        public Double Trafic_Received { get; set; }
+    }
     public class StatusData {
-        public Double cpu { get; set; }
-        public Double mem { get; set; }
-        public Double traficTotal { get; set; }
-        public Double traficSent { get; set; }
-        public Double traficReceived { get; set; }
+        public string HAProxy_IP { get; set; }
+        public Double CPU_Useage { get; set; }
+        public Double Available_Memory { get; set; }
+        public Double Trafic_Total { get; set; }
+        public Double Trafic_Sent { get; set; }
+        public Double Trafic_Received { get; set; }
+        public IList<ClusterStatusData> Cluster { get; set; }
     }
 
     public partial class MainWindow : Window {
@@ -36,7 +46,7 @@ namespace HA_Monitor {
         private static Socket server;
         private List<Socket> clientList;
 
-        private List<TabControl> haproxyList;
+        private List<HAProxyInfo> haproxyList;
 
         private static byte[] getByte;
         private static byte[] setByte;
@@ -60,7 +70,7 @@ namespace HA_Monitor {
                 += new EventHandler<SocketAsyncEventArgs>(Accept_Completed);
             server.AcceptAsync(args);
 
-            haproxyList = new List<TabControl>();
+            haproxyList = new List<HAProxyInfo>();
 
             InitializeComponent();
         }
@@ -90,12 +100,14 @@ namespace HA_Monitor {
                 string sData = Encoding.UTF8.GetString(szData);
 
                 StatusData ReceivedData = JsonConvert.DeserializeObject<StatusData>(sData);
-                Console.WriteLine(ReceivedData.cpu);
-                Console.WriteLine(ReceivedData.mem);
-                Console.WriteLine(ReceivedData.traficTotal);
-                Console.WriteLine(ReceivedData.traficSent);
-                Console.WriteLine(ReceivedData.traficReceived);
+                Console.WriteLine(ReceivedData.CPU_Useage);
+                Console.WriteLine(ReceivedData.Available_Memory);
+                Console.WriteLine(ReceivedData.Trafic_Total);
+                Console.WriteLine(ReceivedData.Trafic_Sent);
+                Console.WriteLine(ReceivedData.Trafic_Received);
                 //Console.WriteLine(sData + "\n\n");
+
+                UpdateUI(ReceivedData);
 
                 e.SetBuffer(new byte[4096], 0, 4096);
                 ClientSocket.ReceiveAsync(e);
@@ -108,8 +120,16 @@ namespace HA_Monitor {
         #endregion
 
         #region UpdateUI
-        private void UpdateUI () {
+        private void UpdateUI (StatusData data) {
+            if (clientList.Count != haproxyList.Count) {
+                if (clientList.Count > haproxyList.Count) {
+                    
+                } else {
 
+                }
+            } else {
+
+            }
         }
 
         private int FindHAProxyClustEle(string IPAddr) {

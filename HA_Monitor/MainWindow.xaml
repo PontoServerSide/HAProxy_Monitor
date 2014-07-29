@@ -3,12 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-    	<TabControl x:Name="TabMainContent">
-    		<TabItem Header="TabItem">
-    			<Grid Background="#FFE5E5E5" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
-    				<StackPanel Orientation="Horizontal"/>
-    			</Grid>
-    		</TabItem>
-    	</TabControl>
+    	<TabControl x:Name="TabMainContent"/>
     </Grid>
 </Window>
